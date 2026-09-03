@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrderManagement.Application.DTOs;
 using OrderManagement.Domain.Entities;
@@ -7,6 +8,7 @@ using OrderManagement.Domain.Interfaces;
 
 namespace OrderManagement.WebApi.Controllers;
 
+[Authorize]
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/customers")]

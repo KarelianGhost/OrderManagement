@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using OrderManagement.Domain.Entities;
 
 namespace OrderManagement.Infrastructure.Persistence;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
@@ -15,6 +17,9 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder); // важно для Identity таблиц
+
+        // Конфигурация Customer
         modelBuilder.Entity<Customer>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -24,6 +29,7 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(e => e.Email).IsUnique();
         });
 
+        // Конфигурация Product
         modelBuilder.Entity<Product>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -31,6 +37,7 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Price).HasPrecision(18, 2);
         });
 
+        // Конфигурация Order
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -41,6 +48,7 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.TotalAmount).HasPrecision(18, 2);
         });
 
+        // Конфигурация OrderItem
         modelBuilder.Entity<OrderItem>(entity =>
         {
             entity.HasKey(e => e.Id);
