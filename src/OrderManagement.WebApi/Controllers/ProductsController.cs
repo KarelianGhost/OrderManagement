@@ -1,78 +1,70 @@
 ﻿using Asp.Versioning;
-using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrderManagement.Application.DTOs;
-using OrderManagement.Domain.Entities;
-using OrderManagement.Domain.Interfaces;
+using OrderManagement.Application.Features.Products.Commands;
+using OrderManagement.Application.Features.Products.Queries;
 
 namespace OrderManagement.WebApi.Controllers;
 
-[Authorize]
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/products")]
+[Authorize]
 public class ProductsController : ControllerBase
 {
-    private readonly IRepository<Product> _productRepository;
-    private readonly IMapper _mapper;
+    private readonly IMediator _mediator;
 
-    public ProductsController(IRepository<Product> productRepository, IMapper mapper)
+    public ProductsController(IMediator mediator)
     {
-        _productRepository = productRepository;
-        _mapper = mapper;
+        _mediator = mediator;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
+    public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetAll()
     {
-        var products = await _productRepository.ListAsync();
-        return Ok(_mapper.Map<IEnumerable<ProductDto>>(products));
+        var result = await _mediator.Send(new GetAllProductsQuery());
+        if (result.IsFailure)
+            return BadRequest(result.Error);
+        return Ok(result.Value);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<ProductDto>> GetById(Guid id)
     {
-        var product = await _productRepository.GetByIdAsync(id);
-        if (product == null)
-            return NotFound();
-
-        return Ok(_mapper.Map<ProductDto>(product));
+        var result = await _mediator.Send(new GetProductByIdQuery(id));
+        if (result.IsFailure)
+            return result.ErrorCode == "NotFound" ? NotFound() : BadRequest(result.Error);
+        return Ok(result.Value);
     }
 
     [HttpPost]
-    public async Task<ActionResult<ProductDto>> Create(CreateProductDto dto)
+    public async Task<ActionResult<ProductDto>> Create(CreateProductCommand command)
     {
-        var product = _mapper.Map<Product>(dto);
-        await _productRepository.AddAsync(product);
-
-        return CreatedAtAction(
-            nameof(GetById),
-            new { id = product.Id, version = "1" },
-            _mapper.Map<ProductDto>(product));
+        var result = await _mediator.Send(command);
+        if (result.IsFailure)
+            return BadRequest(result.Error);
+        return CreatedAtAction(nameof(GetById), new { id = result.Value!.Id, version = "1" }, result.Value);
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, UpdateProductDto dto)
+    public async Task<IActionResult> Update(Guid id, UpdateProductCommand command)
     {
-        var product = await _productRepository.GetByIdAsync(id);
-        if (product == null)
-            return NotFound();
-
-        _mapper.Map(dto, product);
-        await _productRepository.UpdateAsync(product);
-
+        if (id != command.Id)
+            return BadRequest("Id mismatch");
+        var result = await _mediator.Send(command);
+        if (result.IsFailure)
+            return result.ErrorCode == "NotFound" ? NotFound() : BadRequest(result.Error);
         return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var product = await _productRepository.GetByIdAsync(id);
-        if (product == null)
-            return NotFound();
-
-        await _productRepository.DeleteAsync(product);
+        var result = await _mediator.Send(new DeleteProductCommand(id));
+        if (result.IsFailure)
+            return result.ErrorCode == "NotFound" ? NotFound() : BadRequest(result.Error);
         return NoContent();
     }
 }

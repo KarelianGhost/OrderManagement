@@ -1,5 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
+using FluentValidation;
+using Microsoft.Extensions.Logging;
 
 namespace OrderManagement.WebApi.Middleware;
 
@@ -30,20 +32,48 @@ public class ExceptionMiddleware
     private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";
-        context.Response.StatusCode = exception switch
+
+        int statusCode;
+        string message;
+        object details;
+
+        switch (exception)  
         {
-            UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
-            KeyNotFoundException => (int)HttpStatusCode.NotFound,
-            _ => (int)HttpStatusCode.InternalServerError
-        };
+            case ValidationException validationException:
+                statusCode = (int)HttpStatusCode.BadRequest;
+                message = "Validation failed";
+                details = validationException.Errors.Select(e => new { e.PropertyName, e.ErrorMessage });
+                break;
+
+            case UnauthorizedAccessException:
+                statusCode = (int)HttpStatusCode.Unauthorized;
+                message = "Unauthorized";
+                details = "Доступ запрещён";
+                break;
+
+            case KeyNotFoundException:
+                statusCode = (int)HttpStatusCode.NotFound;
+                message = "Not Found";
+                details = "Ресурс не найден";
+                break;
+
+            default:
+                statusCode = (int)HttpStatusCode.InternalServerError;
+                message = "Internal Server Error";
+                details = "Произошла ошибка на сервере";
+                break;
+        }
+
+        context.Response.StatusCode = statusCode;
 
         var response = new
         {
-            statusCode = context.Response.StatusCode,
-            message = exception.Message,
-            details = exception is UnauthorizedAccessException ? "Доступ запрещён" : "Произошла ошибка на сервере"
+            statusCode,
+            message,
+            details
         };
 
-        await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+        var json = JsonSerializer.Serialize(response);
+        await context.Response.WriteAsync(json);
     }
 }

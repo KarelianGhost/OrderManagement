@@ -1,10 +1,15 @@
 using Asp.Versioning;
+using FluentValidation;
 using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using OrderManagement.Application.Common.Behaviors;
+using OrderManagement.Application.Features.Customers.Commands;
+using OrderManagement.Application.Features.Products.Commands;
 using OrderManagement.Application.Interfaces;
 using OrderManagement.Application.Mappings;
 using OrderManagement.Domain.Interfaces;
@@ -15,6 +20,7 @@ using OrderManagement.WebApi.Data;
 using OrderManagement.WebApi.Middleware;
 using System.Reflection;
 using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,9 +81,21 @@ builder.Services.AddAuthentication(options =>
 // Repositories and Services
 builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
+
+// MediatR
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(OrderManagement.Application.Features.Customers.Commands.CreateCustomerCommand).Assembly);
+    cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+    cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+});
+
+builder.Services.AddValidatorsFromAssembly(typeof(CreateCustomerCommandValidator).Assembly);
+builder.Services.AddValidatorsFromAssembly(typeof(CreateProductCommandValidator).Assembly);
 
 // Swagger with JWT support
 builder.Services.AddEndpointsApiExplorer();
@@ -118,6 +136,9 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Middleware
+
+app.UseMiddleware<ExceptionMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -131,7 +152,6 @@ if (app.Environment.IsDevelopment())
         }
     });
 }
-app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
