@@ -1,12 +1,15 @@
 using Asp.Versioning;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hangfire;
+using Hangfire.PostgreSql;
+using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using OrderManagement.Application.Common.Behaviors;
 using OrderManagement.Application.Features.Customers.Commands;
 using OrderManagement.Application.Features.Products.Commands;
@@ -17,6 +20,8 @@ using OrderManagement.Infrastructure.Persistence;
 using OrderManagement.Infrastructure.Repositories;
 using OrderManagement.Infrastructure.Services;
 using OrderManagement.WebApi.Data;
+using OrderManagement.WebApi.Consumers;
+using OrderManagement.WebApi.Jobs;
 using OrderManagement.WebApi.Middleware;
 using System.Reflection;
 using System.Text;
@@ -83,6 +88,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICacheService, RedisCacheService>();
+builder.Services.AddScoped<IEventPublisher, MassTransitEventPublisher>();
 
 // Redis caching
 builder.Services.AddStackExchangeRedisCache(options =>
@@ -111,30 +117,61 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Name = "Authorization",
         Type = SecuritySchemeType.Http,
         Scheme = "bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "¬ведите JWT-токен в формате: Bearer {token}"
+        Description = "¬ведите JWT-токен"
     });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
     {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
     });
 });
 
+// MassTransit
+builder.Services.AddMassTransit(x =>
+{
+    x.SetKebabCaseEndpointNameFormatter();
+
+    x.AddConsumer<ProductCreatedEventConsumer>();
+    x.AddConsumer<CustomerCreatedEventConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+        cfg.ConfigureEndpoints(context);
+    });
+
+    x.AddEntityFrameworkOutbox<ApplicationDbContext>(o =>
+    {
+        o.UsePostgres();
+        o.UseBusOutbox();
+    });
+});
+
+// Hangfire
+builder.Services.AddHangfire(config =>
+    config.UsePostgreSqlStorage(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        new PostgreSqlStorageOptions { SchemaName = "hangfire" }));
+builder.Services.AddHangfireServer();
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+    recurringJobManager.AddOrUpdate<CleanupJob>(
+        "cleanup-job",
+        job => job.Execute(),
+        Cron.Daily); // ежедневно
+}
 
 // Seed roles and admin user (выполн€етс€ при старте)
 using (var scope = app.Services.CreateScope())
@@ -163,6 +200,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseHangfireDashboard("/hangfire");
+
 app.MapControllers();
 
 app.Run();
