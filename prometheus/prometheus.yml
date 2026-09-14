@@ -1,0 +1,15 @@
+global:
+  scrape_interval: 15s # Как часто собирать метрики
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'order-management-api'
+    # Важно: используем http, так как внутри Docker-сети приложение работает по http
+    scheme: 'http'
+    static_configs:
+      # host.docker.internal — это специальный DNS-адрес, который позволяет
+      # контейнерам обращаться к сервисам на хост-машине (вашему ПК).
+      # Порт должен совпадать с тем, на котором запущено ваше .NET приложение (обычно 5000 или 7000).
+      - targets: ['host.docker.internal:5000']
+    # Если ваше приложение работает на другом порту, измените его здесь.
+    # Например: 'host.docker.internal:5001' для HTTPS, но лучше использовать HTTP-порт.

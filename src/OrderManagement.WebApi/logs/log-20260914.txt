@@ -1,0 +1,116 @@
+2026-09-14 09:35:57.647 +03:00 [INF] Start installing Hangfire SQL objects...
+2026-09-14 09:35:57.683 +03:00 [INF] Hangfire SQL objects installed.
+2026-09-14 09:35:57.849 +03:00 [INF] Configured endpoint product-created-event, Consumer: OrderManagement.WebApi.Consumers.ProductCreatedEventConsumer
+2026-09-14 09:35:57.853 +03:00 [INF] Configured endpoint customer-created-event, Consumer: OrderManagement.WebApi.Consumers.CustomerCreatedEventConsumer
+2026-09-14 09:35:58.267 +03:00 [INF] Starting web application
+2026-09-14 09:35:58.631 +03:00 [INF] Bus started: "rabbitmq://localhost/"
+2026-09-14 09:35:58.646 +03:00 [INF] Now listening on: https://localhost:7149
+2026-09-14 09:35:58.646 +03:00 [INF] Now listening on: http://localhost:5096
+2026-09-14 09:35:58.711 +03:00 [INF] Starting Hangfire Server using job storage: 'PostgreSQL Server: Host: localhost, DB: OrderManagementDb, Schema: hangfire'
+2026-09-14 09:35:58.712 +03:00 [INF] Using the following options for PostgreSQL job storage:
+2026-09-14 09:35:58.713 +03:00 [INF]     Queue poll interval: 00:00:15.
+2026-09-14 09:35:58.714 +03:00 [INF]     Invisibility timeout: 00:30:00.
+2026-09-14 09:35:58.715 +03:00 [INF]     Use sliding invisibility timeout: False.
+2026-09-14 09:35:58.715 +03:00 [INF] Using the following options for Hangfire Server:
+    Worker count: 20
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2026-09-14 09:35:58.728 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-14 09:35:58.729 +03:00 [INF] Hosting environment: Development
+2026-09-14 09:35:58.730 +03:00 [INF] Content root path: C:\Users\karel\source\repos\OrderManagement\src\OrderManagement.WebApi
+2026-09-14 09:35:58.746 +03:00 [INF] Server desktop-960jj20:22268:1903b709 successfully announced in 16,6064 ms
+2026-09-14 09:35:58.792 +03:00 [INF] Server desktop-960jj20:22268:1903b709 is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, ExpirationManager, CountersAggregator, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2026-09-14 09:35:58.797 +03:00 [INF] 2 servers were removed due to timeout
+2026-09-14 09:35:58.832 +03:00 [INF] Server desktop-960jj20:22268:1903b709 all the dispatchers started
+2026-09-14 09:38:46.565 +03:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-09-14 09:38:46.568 +03:00 [INF] Handling GetAllProductsQuery: {"$type":"GetAllProductsQuery"}
+2026-09-14 09:38:46.790 +03:00 [INF] Handled GetAllProductsQuery
+2026-09-14 09:41:09.444 +03:00 [ERR] Health check rabbitmq threw an unhandled exception after 4.7361ms
+System.TypeLoadException: Could not load type 'RabbitMQ.Client.IModel' from assembly 'RabbitMQ.Client, Version=7.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce'.
+   at HealthChecks.RabbitMQ.RabbitMQHealthCheck.CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService.RunCheckAsync(HealthCheckRegistration registration, CancellationToken cancellationToken)
+2026-09-14 09:41:20.719 +03:00 [ERR] Health check rabbitmq threw an unhandled exception after 0.8976ms
+System.TypeLoadException: Could not load type 'RabbitMQ.Client.IModel' from assembly 'RabbitMQ.Client, Version=7.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce'.
+   at HealthChecks.RabbitMQ.RabbitMQHealthCheck.CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService.RunCheckAsync(HealthCheckRegistration registration, CancellationToken cancellationToken)
+2026-09-14 09:45:00.200 +03:00 [INF] Start installing Hangfire SQL objects...
+2026-09-14 09:45:00.235 +03:00 [INF] Hangfire SQL objects installed.
+2026-09-14 09:45:00.386 +03:00 [INF] Configured endpoint product-created-event, Consumer: OrderManagement.WebApi.Consumers.ProductCreatedEventConsumer
+2026-09-14 09:45:00.389 +03:00 [INF] Configured endpoint customer-created-event, Consumer: OrderManagement.WebApi.Consumers.CustomerCreatedEventConsumer
+2026-09-14 09:45:00.563 +03:00 [INF] Starting web application
+2026-09-14 09:45:00.790 +03:00 [INF] Now listening on: https://localhost:7149
+2026-09-14 09:45:00.791 +03:00 [INF] Now listening on: http://localhost:5096
+2026-09-14 09:45:00.832 +03:00 [INF] Bus started: "rabbitmq://localhost/"
+2026-09-14 09:45:00.843 +03:00 [INF] Starting Hangfire Server using job storage: 'PostgreSQL Server: Host: localhost, DB: OrderManagementDb, Schema: hangfire'
+2026-09-14 09:45:00.844 +03:00 [INF] Using the following options for PostgreSQL job storage:
+2026-09-14 09:45:00.844 +03:00 [INF]     Queue poll interval: 00:00:15.
+2026-09-14 09:45:00.845 +03:00 [INF]     Invisibility timeout: 00:30:00.
+2026-09-14 09:45:00.846 +03:00 [INF]     Use sliding invisibility timeout: False.
+2026-09-14 09:45:00.847 +03:00 [INF] Using the following options for Hangfire Server:
+    Worker count: 20
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2026-09-14 09:45:00.858 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-14 09:45:00.859 +03:00 [INF] Hosting environment: Development
+2026-09-14 09:45:00.859 +03:00 [INF] Content root path: C:\Users\karel\source\repos\OrderManagement\src\OrderManagement.WebApi
+2026-09-14 09:45:00.869 +03:00 [INF] Server desktop-960jj20:22052:7940dab7 successfully announced in 10,2878 ms
+2026-09-14 09:45:00.872 +03:00 [INF] Server desktop-960jj20:22052:7940dab7 is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, ExpirationManager, CountersAggregator, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2026-09-14 09:45:00.915 +03:00 [INF] Server desktop-960jj20:22052:7940dab7 all the dispatchers started
+2026-09-14 09:47:09.061 +03:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-09-14 09:47:09.064 +03:00 [INF] Handling GetAllProductsQuery: {"$type":"GetAllProductsQuery"}
+2026-09-14 09:47:09.189 +03:00 [INF] Handled GetAllProductsQuery
+2026-09-14 09:53:40.314 +03:00 [INF] Start installing Hangfire SQL objects...
+2026-09-14 09:53:40.346 +03:00 [INF] Hangfire SQL objects installed.
+2026-09-14 09:53:40.472 +03:00 [INF] Configured endpoint product-created-event, Consumer: OrderManagement.WebApi.Consumers.ProductCreatedEventConsumer
+2026-09-14 09:53:40.476 +03:00 [INF] Configured endpoint customer-created-event, Consumer: OrderManagement.WebApi.Consumers.CustomerCreatedEventConsumer
+2026-09-14 09:53:40.641 +03:00 [INF] Starting web application
+2026-09-14 09:53:40.868 +03:00 [INF] Now listening on: https://localhost:7149
+2026-09-14 09:53:40.869 +03:00 [INF] Now listening on: http://localhost:5096
+2026-09-14 09:53:40.909 +03:00 [INF] Bus started: "rabbitmq://localhost/"
+2026-09-14 09:53:40.916 +03:00 [INF] Starting Hangfire Server using job storage: 'PostgreSQL Server: Host: localhost, DB: OrderManagementDb, Schema: hangfire'
+2026-09-14 09:53:40.917 +03:00 [INF] Using the following options for PostgreSQL job storage:
+2026-09-14 09:53:40.917 +03:00 [INF]     Queue poll interval: 00:00:15.
+2026-09-14 09:53:40.918 +03:00 [INF]     Invisibility timeout: 00:30:00.
+2026-09-14 09:53:40.919 +03:00 [INF]     Use sliding invisibility timeout: False.
+2026-09-14 09:53:40.919 +03:00 [INF] Using the following options for Hangfire Server:
+    Worker count: 20
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2026-09-14 09:53:40.930 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-14 09:53:40.931 +03:00 [INF] Hosting environment: Development
+2026-09-14 09:53:40.931 +03:00 [INF] Content root path: C:\Users\karel\source\repos\OrderManagement\src\OrderManagement.WebApi
+2026-09-14 09:53:40.941 +03:00 [INF] Server desktop-960jj20:11668:fd97160d successfully announced in 9,8503 ms
+2026-09-14 09:53:40.943 +03:00 [INF] Server desktop-960jj20:11668:fd97160d is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, ExpirationManager, CountersAggregator, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2026-09-14 09:53:40.949 +03:00 [INF] 2 servers were removed due to timeout
+2026-09-14 09:53:40.976 +03:00 [INF] Server desktop-960jj20:11668:fd97160d all the dispatchers started
+2026-09-14 09:53:41.154 +03:00 [INF] Removed 1 outdated record(s) from 'aggregatedcounter' table.
+2026-09-14 09:53:42.199 +03:00 [INF] Removed 1 outdated record(s) from 'job' table.
+2026-09-14 09:58:03.897 +03:00 [INF] Start installing Hangfire SQL objects...
+2026-09-14 09:58:03.930 +03:00 [INF] Hangfire SQL objects installed.
+2026-09-14 09:58:04.058 +03:00 [INF] Configured endpoint product-created-event, Consumer: OrderManagement.WebApi.Consumers.ProductCreatedEventConsumer
+2026-09-14 09:58:04.062 +03:00 [INF] Configured endpoint customer-created-event, Consumer: OrderManagement.WebApi.Consumers.CustomerCreatedEventConsumer
+2026-09-14 09:58:04.244 +03:00 [INF] Starting web application
+2026-09-14 09:58:04.363 +03:00 [WRN] Overriding address(es) 'http://localhost:5000'. Binding to endpoints defined via IConfiguration and/or UseKestrel() instead.
+2026-09-14 09:58:04.382 +03:00 [INF] Now listening on: http://localhost:5000
+2026-09-14 09:58:04.439 +03:00 [INF] Starting Hangfire Server using job storage: 'PostgreSQL Server: Host: localhost, DB: OrderManagementDb, Schema: hangfire'
+2026-09-14 09:58:04.440 +03:00 [INF] Using the following options for PostgreSQL job storage:
+2026-09-14 09:58:04.441 +03:00 [INF]     Queue poll interval: 00:00:15.
+2026-09-14 09:58:04.441 +03:00 [INF]     Invisibility timeout: 00:30:00.
+2026-09-14 09:58:04.442 +03:00 [INF]     Use sliding invisibility timeout: False.
+2026-09-14 09:58:04.443 +03:00 [INF] Using the following options for Hangfire Server:
+    Worker count: 20
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2026-09-14 09:58:04.456 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-14 09:58:04.457 +03:00 [INF] Hosting environment: Development
+2026-09-14 09:58:04.458 +03:00 [INF] Content root path: C:\Users\karel\source\repos\OrderManagement\src\OrderManagement.WebApi
+2026-09-14 09:58:04.466 +03:00 [INF] Server desktop-960jj20:24464:81a6262e successfully announced in 9,4697 ms
+2026-09-14 09:58:04.469 +03:00 [INF] Server desktop-960jj20:24464:81a6262e is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, ExpirationManager, CountersAggregator, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2026-09-14 09:58:04.502 +03:00 [INF] Server desktop-960jj20:24464:81a6262e all the dispatchers started
+2026-09-14 09:58:04.530 +03:00 [INF] Bus started: "rabbitmq://localhost/"
+2026-09-14 09:58:48.737 +03:00 [WRN] Failed to determine the https port for redirect.
+2026-09-14 10:03:04.540 +03:00 [INF] 1 servers were removed due to timeout
