@@ -16,6 +16,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решен
 		.gitignore = .gitignore
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F39F6DB3-6764-4DE5-8E9B-7255F4BE09DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderManagement.UnitTests", "tests\OrderManagement.UnitTests\OrderManagement.UnitTests.csproj", "{EED82EE9-F824-4145-8CDB-A85355E2976F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderManagement.IntegrationTests", "tests\OrderManagement.IntegrationTests\OrderManagement.IntegrationTests.csproj", "{6B8F3C37-F886-48E8-9AD2-E5DE2034A338}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,11 +44,23 @@ Global
 		{E4486F64-5AE6-4C99-A020-951630D2B42A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4486F64-5AE6-4C99-A020-951630D2B42A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4486F64-5AE6-4C99-A020-951630D2B42A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EED82EE9-F824-4145-8CDB-A85355E2976F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EED82EE9-F824-4145-8CDB-A85355E2976F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EED82EE9-F824-4145-8CDB-A85355E2976F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EED82EE9-F824-4145-8CDB-A85355E2976F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B8F3C37-F886-48E8-9AD2-E5DE2034A338}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B8F3C37-F886-48E8-9AD2-E5DE2034A338}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B8F3C37-F886-48E8-9AD2-E5DE2034A338}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B8F3C37-F886-48E8-9AD2-E5DE2034A338}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {545B72CC-449C-45F9-B01B-165077EDC0E4}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EED82EE9-F824-4145-8CDB-A85355E2976F} = {F39F6DB3-6764-4DE5-8E9B-7255F4BE09DB}
+		{6B8F3C37-F886-48E8-9AD2-E5DE2034A338} = {F39F6DB3-6764-4DE5-8E9B-7255F4BE09DB}
 	EndGlobalSection
 EndGlobal

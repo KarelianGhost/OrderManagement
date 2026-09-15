@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:  # позволяет запускать вручную из вкладки Actions
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    name: Build & Test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run Unit Tests
+        run: >
+          dotnet test tests/OrderManagement.UnitTests
+          --no-build --configuration Release
+          --logger "trx;LogFileName=unit-tests.trx"
+          /p:CollectCoverage=true
+          /p:CoverletOutputFormat=cobertura
+          /p:CoverletOutput=./coverage/
+
+      - name: Run Integration Tests
+        run: >
+          dotnet test tests/OrderManagement.IntegrationTests
+          --no-build --configuration Release
+          --logger "trx;LogFileName=integration-tests.trx"
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: '**/*.trx'
+
+      - name: Upload Coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./tests/OrderManagement.UnitTests/coverage/coverage.cobertura.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+      - name: Upload Coverage Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: tests/OrderManagement.UnitTests/coverage/

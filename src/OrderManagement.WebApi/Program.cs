@@ -202,12 +202,13 @@ try
                 .AddHttpClientInstrumentation()
                 .AddEntityFrameworkCoreInstrumentation()
                 .AddRedisInstrumentation()
-                .AddSource("MassTransit")
-                .AddOtlpExporter(options =>
+                .AddSource("MassTransit");
+                if (!builder.Environment.IsEnvironment("Testing"))
                 {
-                    options.Endpoint = new Uri("http://localhost:4317");
-                })
-                .AddConsoleExporter();
+                    tracing
+                        .AddOtlpExporter(o => o.Endpoint = new Uri("http://localhost:4317"))
+                        .AddConsoleExporter();
+                }
         })
         .WithMetrics(metrics =>
         {
@@ -240,10 +241,10 @@ try
     var app = builder.Build();
 
     // Инициализация ролей и админа
-    using (var scope = app.Services.CreateScope())
+    if (!app.Environment.IsEnvironment("Testing"))
     {
-        var services = scope.ServiceProvider;
-        await SeedData.InitializeAsync(services);
+        using var scope = app.Services.CreateScope();
+        await SeedData.InitializeAsync(scope.ServiceProvider);
     }
 
     // Exception Middleware
@@ -270,7 +271,10 @@ try
     app.UseAuthorization();
 
     // Hangfire Dashboard
-    app.UseHangfireDashboard("/hangfire");
+    if (!app.Environment.IsEnvironment("Testing"))
+    {
+        app.UseHangfireDashboard("/hangfire");
+    }
 
     // Prometheus
     app.UseOpenTelemetryPrometheusScrapingEndpoint();
@@ -287,8 +291,9 @@ try
     });
 
     // Регистрация job
-    using (var scope = app.Services.CreateScope())
+    if (!app.Environment.IsEnvironment("Testing"))
     {
+        using var scope = app.Services.CreateScope();
         var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
         recurringJobManager.AddOrUpdate<CleanupJob>(
             "cleanup-job",
@@ -304,8 +309,11 @@ try
 catch (Exception ex)
 {
     Log.Fatal(ex, "Application terminated unexpectedly");
+    throw;
 }
 finally
 {
     Log.CloseAndFlush();
 }
+
+public partial class Program { }
